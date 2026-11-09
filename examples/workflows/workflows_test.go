@@ -281,7 +281,7 @@ func TestExampleRunScriptsNeverInlineGitHubExpressions(t *testing.T) {
 	upgrades := readWorkflow(t, "provider-upgrades.yml")
 	for name, want := range map[string]string{
 		"REQUESTED_LEVEL": "${{ inputs.level || 'auto' }}",
-		"ALLOW_MAJOR": "${{ inputs.allow_major || 'false' }}",
+		"ALLOW_MAJOR":     "${{ inputs.allow_major || 'false' }}",
 	} {
 		if got := findStep(t, upgrades, "discover", "plan").Env[name]; got != want {
 			t.Errorf("discovery env %s=%q, want %q", name, got, want)
@@ -289,8 +289,8 @@ func TestExampleRunScriptsNeverInlineGitHubExpressions(t *testing.T) {
 	}
 	for name, want := range map[string]string{
 		"MATRIX_PROVIDER": "${{ matrix.provider }}",
-		"MATRIX_LEVEL": "${{ matrix.level }}",
-		"ALLOW_MAJOR": "${{ inputs.allow_major || 'false' }}",
+		"MATRIX_LEVEL":    "${{ matrix.level }}",
+		"ALLOW_MAJOR":     "${{ inputs.allow_major || 'false' }}",
 	} {
 		if got := findStep(t, upgrades, "upgrade", "upgrade").Env[name]; got != want {
 			t.Errorf("upgrade env %s=%q, want %q", name, got, want)
@@ -299,8 +299,8 @@ func TestExampleRunScriptsNeverInlineGitHubExpressions(t *testing.T) {
 	compatibility := readWorkflow(t, "provider-compatibility.yml")
 	for name, want := range map[string]string{
 		"REQUESTED_LEVEL": "${{ inputs.level || 'minor' }}",
-		"ALLOW_MAJOR": "${{ inputs.allow_major || 'false' }}",
-		"RAISE_FLOOR": "${{ inputs.raise_floor || 'false' }}",
+		"ALLOW_MAJOR":     "${{ inputs.allow_major || 'false' }}",
+		"RAISE_FLOOR":     "${{ inputs.raise_floor || 'false' }}",
 	} {
 		if got := findStep(t, compatibility, "compatibility", "attempt").Env[name]; got != want {
 			t.Errorf("compatibility env %s=%q, want %q", name, got, want)
@@ -650,7 +650,7 @@ func TestCompatibilityPassesExplicitTargetWithoutNextMajor(t *testing.T) {
 	}
 	output, err := harness.run(t, step, map[string]string{
 		"REQUESTED_LEVEL": "major",
-		"ALLOW_MAJOR": "true", "RAISE_FLOOR": "false",
+		"ALLOW_MAJOR":     "true", "RAISE_FLOOR": "false",
 	})
 	if err != nil {
 		t.Fatalf("explicit compatibility target failed: %v\n%s\ninvocations: %v", err, output, harness.invocations(t))
