@@ -61,10 +61,13 @@ jobs:
 
       - id: plan
         name: Build the upgrade matrix
+        env:
+          REQUESTED_LEVEL: ${{ inputs.level || 'auto' }}
+          ALLOW_MAJOR: ${{ inputs.allow_major || 'false' }}
         run: |
           set -euo pipefail
-          requested="${{ inputs.level || 'auto' }}"
-          allow_major="${{ inputs.allow_major || 'false' }}"
+          requested="$REQUESTED_LEVEL"
+          allow_major="$ALLOW_MAJOR"
 
           if [ "$requested" = "major" ] && [ "$allow_major" != "true" ]; then
             echo "::error::level=major also requires allow_major, which records that breaking changes are expected."
@@ -152,24 +155,28 @@ jobs:
 
       - id: upgrade
         name: Upgrade ${{ matrix.provider }}
+        env:
+          MATRIX_PROVIDER: ${{ matrix.provider }}
+          MATRIX_LEVEL: ${{ matrix.level }}
+          ALLOW_MAJOR: ${{ inputs.allow_major || 'false' }}
         run: |
           set -euo pipefail
 
           args=(
-            --provider "${{ matrix.provider }}"
-            --level "${{ matrix.level }}"
+            --provider "$MATRIX_PROVIDER"
+            --level "$MATRIX_LEVEL"
             --exact-level
             --pr-body "$RUNNER_TEMP/pr-body.md"
             --json
           )
-          if [ "${{ matrix.level }}" = "major" ] && [ "${{ inputs.allow_major || 'false' }}" != "true" ]; then
+          if [ "$MATRIX_LEVEL" = "major" ] && [ "$ALLOW_MAJOR" != "true" ]; then
             echo "::error::level=major requires allow_major before applying an upgrade."
             exit 1
           fi
-          if [ "${{ inputs.allow_major || 'false' }}" = "true" ]; then
+          if [ "$ALLOW_MAJOR" = "true" ]; then
             args+=(--allow-major)
           fi
-          if [ "${{ matrix.level }}" = "major" ]; then
+          if [ "$MATRIX_LEVEL" = "major" ]; then
             args+=(--next-major)
           fi
 
