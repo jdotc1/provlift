@@ -649,7 +649,7 @@ func TestCompatibilityPassesExplicitTargetWithoutNextMajor(t *testing.T) {
 		t.Fatal(err)
 	}
 	output, err := harness.run(t, step, map[string]string{
-		"REQUESTED_LEVEL":       "major",
+		"REQUESTED_LEVEL": "major",
 		"ALLOW_MAJOR": "true", "RAISE_FLOOR": "false",
 	})
 	if err != nil {
