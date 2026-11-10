@@ -29,7 +29,7 @@ Executable precedence: **`--terraform-binary` > `PROVLIFT_TERRAFORM_BIN` >
 `.provlift.yaml` `terraform.binary` > default `terraform`**. The environment
 variable overrides repository selection of either `terraform` or `tofu`.
 Cobra also supplies `provlift help <command>` and `provlift completion <shell>`
-for shell autocompletion.
+for shell autocompletion (see [Shell completion](../installation/README.md#37-shell-completion)).
 
 ### 6.2 `provlift list`
 

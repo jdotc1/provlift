@@ -185,4 +185,87 @@ Open a new shell and rerun the lookup command above to check for another
 installation. Do not remove `GOPATH/bin` from `PATH` unless you are certain no
 other Go tools use it.
 
+### 3.7 Shell completion
+
+`provlift` generates shell completion scripts for Bash, Zsh, Fish, and PowerShell via `provlift completion <shell>`.
+
+Flags like `--exact-level`, `--next-major`, `--pin-unconstrained`, `--raise-floor`, and `--include-prerelease` can be auto-completed directly in your terminal.
+
+#### Bash
+
+Bash completion requires the `bash-completion` package to be installed on your system.
+
+To load completions in your current shell session:
+
+```bash
+source <(provlift completion bash)
+```
+
+To load completions for every new session, execute once:
+
+- **Linux:**
+  ```bash
+  provlift completion bash | sudo tee /etc/bash_completion.d/provlift > /dev/null
+  ```
+- **macOS (with Homebrew):**
+  ```bash
+  provlift completion bash > $(brew --prefix)/etc/bash_completion.d/provlift
+  ```
+
+#### Zsh
+
+If completion is not already enabled in your Zsh environment, add the `compinit` initialization to your `~/.zshrc`:
+
+```zsh
+autoload -U compinit; compinit
+```
+
+To load completions in your current shell session:
+
+```zsh
+source <(provlift completion zsh)
+```
+
+To load completions for every new session, execute once:
+
+- **Linux:**
+  ```zsh
+  provlift completion zsh > "${fpath[1]}/_provlift"
+  ```
+- **macOS (with Homebrew):**
+  ```zsh
+  provlift completion zsh > $(brew --prefix)/share/zsh/site-functions/_provlift
+  ```
+
+#### Fish
+
+To load completions in your current shell session:
+
+```fish
+provlift completion fish | source
+```
+
+To load completions for every new session, execute once:
+
+```fish
+provlift completion fish > ~/.config/fish/completions/provlift.fish
+```
+
+#### PowerShell
+
+To load completions in your current shell session:
+
+```powershell
+provlift completion powershell | Out-String | Invoke-Expression
+```
+
+To load completions for every new session, append the snippet above to your PowerShell profile (`$PROFILE`):
+
+```powershell
+if (-not (Test-Path $PROFILE)) {
+    New-Item -ItemType File -Path $PROFILE -Force
+}
+Add-Content -Path $PROFILE -Value 'provlift completion powershell | Out-String | Invoke-Expression'
+```
+
 ---
