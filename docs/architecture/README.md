@@ -237,8 +237,8 @@ from overriding an operator's trusted environment-selected executable.
 | Code | Meaning |
 |---|---|
 | 0 | Success |
-| 1 | Error, or a refused/unsupported operation |
-| 2 | `--exit-code` set and upgrades are available |
+| 1 | Error, a refused/unsupported operation, or `check --exit-code` with one or more registry lookup failures |
+| 2 | `--exit-code` set, upgrades are available, and all registry lookups succeeded |
 | 3 | Terraform validation failed |
 
 ### `upgrade --json`

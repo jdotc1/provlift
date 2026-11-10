@@ -92,7 +92,7 @@ MODULE  SOURCE               CONSTRAINT     CURRENT  PATCH  MINOR    LATEST  UPG
 
 `BLOCKED` means a newer version exists but the declared constraint forbids it.
 
-Use `--exit-code` in CI to exit `2` when upgrades are available.
+Use `--exit-code` in CI to exit `2` when upgrades are available, or `1` when any registry lookup fails.
 
 **Columns**
 
@@ -115,7 +115,7 @@ Use `--exit-code` in CI to exit `2` when upgrades are available.
 | `--provider` | all | Only check these providers (repeatable) |
 | `--module` | all | Only check these module paths (repeatable; slash-separated doublestar glob) |
 | `--level` | `major` | Highest level to count: `patch`, `minor` or `major` |
-| `--exit-code` | `false` | Exit `2` when upgrades are available, for CI gating |
+| `--exit-code` | `false` | Exit `2` when upgrades are available, or `1` when a registry lookup fails, for CI gating |
 
 `--module` uses slash-separated doublestar globs on every platform. A bare path
 selects only that module; append `/**` to include descendant modules. For
@@ -413,8 +413,8 @@ provlift version --json
 | Code | Meaning |
 |---|---|
 | `0` | Success |
-| `1` | Error, or a refused/unsupported operation (including a missing or timed-out Terraform, or a lock result `upgrade` refuses) |
-| `2` | `check --exit-code`: upgrades are available; `drift --exit-code`: inconsistencies found |
+| `1` | Error, a refused/unsupported operation (including a missing or timed-out Terraform, or a lock result `upgrade` refuses), or `check --exit-code` with one or more registry lookup failures |
+| `2` | `check --exit-code`: upgrades are available and all lookups succeeded; `drift --exit-code`: inconsistencies found |
 | `3` | Terraform reported a failure (`fmt`, `init`, `providers lock`, `validate` or `plan`) |
 
 ---

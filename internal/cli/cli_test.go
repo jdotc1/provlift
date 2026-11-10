@@ -1313,3 +1313,42 @@ func TestRegistryFailureIsReportedPerProvider(t *testing.T) {
 		t.Errorf("the working provider should still be reported:\n%s", h.stdout.String())
 	}
 }
+
+func TestCheckExitCodeSignalsRegistryLookupFailures(t *testing.T) {
+	h := newHarness(t, nil)
+	h.fake.versions = map[string][]string{
+		"integrations/github": {"6.2.1", "6.13.0"},
+	}
+
+	err := h.run(t, newCheckCommand(h.opts), "--exit-code")
+	if code := exitCode(t, err); code != ExitError {
+		t.Fatalf("exit code = %d, want %d: %v", code, ExitError, err)
+	}
+	if !strings.Contains(err.Error(), "1 registry lookup(s) failed") {
+		t.Fatalf("lookup failure was not explained: %v", err)
+	}
+	if !strings.Contains(h.stdout.String(), "6.13.0") {
+		t.Errorf("the working provider should still be reported:\n%s", h.stdout.String())
+	}
+}
+
+func TestCheckJSONReportsRegistryLookupFailures(t *testing.T) {
+	h := newHarness(t, nil)
+	h.opts.jsonOut = true
+	h.fake.versions = map[string][]string{
+		"integrations/github": {"6.2.1", "6.13.0"},
+	}
+
+	if err := h.run(t, newCheckCommand(h.opts)); err != nil {
+		t.Fatalf("check: %v", err)
+	}
+	var got struct {
+		LookupFailures int `json:"lookup_failures"`
+	}
+	if err := json.Unmarshal(h.stdout.Bytes(), &got); err != nil {
+		t.Fatal(err)
+	}
+	if got.LookupFailures != 1 {
+		t.Fatalf("lookup_failures = %d, want 1", got.LookupFailures)
+	}
+}

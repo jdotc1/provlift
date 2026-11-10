@@ -234,7 +234,11 @@ Read-only: this command never modifies files.`,
 			statuses := collectStatuses(ws, vs, selectors, modules, g.includePrerelease)
 
 			upgradable := 0
+			lookupFailures := 0
 			for _, st := range statuses {
+				if st.Error != "" {
+					lookupFailures++
+				}
 				if st.Available != upgrade.LevelNone && maxLevel.Allows(st.Available) {
 					upgradable++
 				}
@@ -245,6 +249,7 @@ Read-only: this command never modifies files.`,
 					"root":               ws.inv.Root,
 					"providers":          statuses,
 					"upgrades_available": upgradable,
+					"lookup_failures":    lookupFailures,
 					"diagnostics":        ws.inv.Diagnostics,
 				}); err != nil {
 					return exitWith(ExitError, err)
@@ -325,8 +330,13 @@ Read-only: this command never modifies files.`,
 				printDiagnostics(g, ws)
 			}
 
-			if exitCode && upgradable > 0 {
-				return exitWith(ExitUpgradesAvailable, nil)
+			if exitCode {
+				if lookupFailures > 0 {
+					return exitWith(ExitError, fmt.Errorf("%d registry lookup(s) failed", lookupFailures))
+				}
+				if upgradable > 0 {
+					return exitWith(ExitUpgradesAvailable, nil)
+				}
 			}
 			return nil
 		},
