@@ -1,5 +1,34 @@
 # Changelog
 
+## [0.4.0](https://github.com/jdotc1/provlift/compare/v0.3.0...v0.4.0) (2026-11-11)
+
+
+### Features
+
+* **config:** lock linux_arm64 by default ([#80](https://github.com/jdotc1/provlift/issues/80)) ([4350036](https://github.com/jdotc1/provlift/commit/4350036eff26854b95fdfb4d567018ad5d5d4479))
+* initial public release of provlift ([96cfffc](https://github.com/jdotc1/provlift/commit/96cfffc0a6f11e5c5d6565510a00a464ff548063))
+* **upgrade:** pass --fs-mirror / --net-mirror to providers lock ([#78](https://github.com/jdotc1/provlift/issues/78)) ([4d3cfd9](https://github.com/jdotc1/provlift/commit/4d3cfd9092fc7f54932f6a78b3286f5de147d85f))
+* **upgrade:** report module versions moved by init -upgrade ([#77](https://github.com/jdotc1/provlift/issues/77)) ([19184df](https://github.com/jdotc1/provlift/commit/19184dfd284cda7fdf6433e7a9a317e50cc96c75))
+
+
+### Bug Fixes
+
+* **check:** apply provider ceilings from repository-local modules to their callers ([#76](https://github.com/jdotc1/provlift/issues/76)) ([e23d1f5](https://github.com/jdotc1/provlift/commit/e23d1f5987e49102770914c85161dcf2a8b0ea48))
+* **check:** fail exit-code checks on registry lookup errors ([#62](https://github.com/jdotc1/provlift/issues/62)) ([12477e2](https://github.com/jdotc1/provlift/commit/12477e24d28fe48ddd4293e97f181c11a7cba747))
+* **check:** stop calling a local module's ceiling external ([#94](https://github.com/jdotc1/provlift/issues/94)) ([d730c91](https://github.com/jdotc1/provlift/commit/d730c91280777363bf90e29e7a6b1cdc143e8510))
+* **ci:** pass workflow expressions through step environment ([#102](https://github.com/jdotc1/provlift/issues/102)) ([12e249f](https://github.com/jdotc1/provlift/commit/12e249fcbb35c190b6bdad8768d27ef06889b223))
+* **cli:** honor trusted Terraform binary from environment ([#90](https://github.com/jdotc1/provlift/issues/90)) ([4490459](https://github.com/jdotc1/provlift/commit/449045919875e85eadab198ba7f9b96b00c1e04b))
+* **cli:** make module globs platform independent ([#63](https://github.com/jdotc1/provlift/issues/63)) ([aa4b769](https://github.com/jdotc1/provlift/commit/aa4b7694444dca18b419d49fc0bca4c4802fd00a))
+* **cli:** warn when PROVLIFT_TERRAFORM_BIN overrides explicit terraform.binary ([#93](https://github.com/jdotc1/provlift/issues/93)) ([#95](https://github.com/jdotc1/provlift/issues/95)) ([13c39de](https://github.com/jdotc1/provlift/commit/13c39decbbec54c13f7ba1ba5f6be4a6d18561ef))
+* **discovery:** skip .terragrunt-cache and report terragrunt.hcl directories ([#46](https://github.com/jdotc1/provlift/issues/46)) ([#97](https://github.com/jdotc1/provlift/issues/97)) ([cc42791](https://github.com/jdotc1/provlift/commit/cc42791bc06370d51c8cc06f2852bd510955afb5))
+* **examples:** avoid jq reserved word $module in explicit-target skip check ([#91](https://github.com/jdotc1/provlift/issues/91)) ([#91](https://github.com/jdotc1/provlift/issues/91)) ([4627033](https://github.com/jdotc1/provlift/commit/46270336c89a9cbc0919d17cb915aa8b86aab1a2))
+* **hcledit:** only recover backups provlift recorded ([#58](https://github.com/jdotc1/provlift/issues/58)) ([93c1e49](https://github.com/jdotc1/provlift/commit/93c1e49ba70c260410b8cd05e689c30791707ffc))
+* **terraform:** pass fmt file names as ./-prefixed paths ([#71](https://github.com/jdotc1/provlift/issues/71)) ([493d5ef](https://github.com/jdotc1/provlift/commit/493d5ef5c8d83a39a57482cef2917921ecc1fa7d))
+* **upgrade:** format only the edited files after an upgrade ([#68](https://github.com/jdotc1/provlift/issues/68)) ([db55311](https://github.com/jdotc1/provlift/commit/db55311dbc19c4bc3a5fc063bf9f83d26d8bb5e0)), closes [#16](https://github.com/jdotc1/provlift/issues/16)
+* **upgrade:** read constraints the way Terraform does ([#59](https://github.com/jdotc1/provlift/issues/59)) ([91ac92b](https://github.com/jdotc1/provlift/commit/91ac92b88f91ce2857ff67bbd260f2f77cb63807))
+* **upgrade:** reject unpublished explicit versions ([#64](https://github.com/jdotc1/provlift/issues/64)) ([e535322](https://github.com/jdotc1/provlift/commit/e535322781edc27ab27b80486384a40bb8312f9f))
+* **upgrade:** report roots whose modules.json cannot be read after init ([#81](https://github.com/jdotc1/provlift/issues/81)) ([#101](https://github.com/jdotc1/provlift/issues/101)) ([c0deabe](https://github.com/jdotc1/provlift/commit/c0deabece28ace476caea15f59c04e0c61fde7a9))
+
 ## [0.3.0](https://github.com/provlift/provlift/compare/v0.2.0...v0.3.0) (2026-11-08)
 
 
