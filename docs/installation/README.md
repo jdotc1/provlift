@@ -119,7 +119,7 @@ the same directory, then verify the ZIP before extracting it:
 $archive = "provlift_v0.1.0_windows_amd64.zip"
 $entry = Get-Content checksums.txt | Where-Object { $_.EndsWith(" $archive") }
 if (@($entry).Count -ne 1) { throw "Missing or duplicate checksum for $archive" }
-$expected = ($entry -split "\\s+")[0]
+$expected = ($entry -split "\s+")[0]
 $actual = (Get-FileHash -Algorithm SHA256 $archive).Hash
 if ($actual -ne $expected) { throw "SHA-256 mismatch for $archive" }
 Write-Host "SHA-256 verified: $archive"
