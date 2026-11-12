@@ -13,7 +13,8 @@ permissions:
 
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  # Only supersede obsolete PR runs; never interrupt a main-branch check.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   # Decides whether the Go jobs need to run. A change that only touches the docs
@@ -24,6 +25,7 @@ jobs:
   changes:
     name: Detect changes
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     outputs:
       go: ${{ steps.diff.outputs.go }}
     steps:
@@ -58,6 +60,7 @@ jobs:
     needs: changes
     if: ${{ !cancelled() && needs.changes.outputs.go != 'false' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
@@ -88,6 +91,7 @@ jobs:
     needs: changes
     if: ${{ !cancelled() && needs.changes.outputs.go != 'false' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
@@ -126,6 +130,7 @@ jobs:
     needs: changes
     if: ${{ !cancelled() && needs.changes.outputs.go != 'false' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
@@ -156,6 +161,7 @@ jobs:
     needs: changes
     if: ${{ !cancelled() && needs.changes.outputs.go != 'false' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
@@ -180,6 +186,7 @@ jobs:
     needs: changes
     if: ${{ !cancelled() && needs.changes.outputs.go != 'false' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
