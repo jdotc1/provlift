@@ -289,7 +289,7 @@ func body(plan *upgrade.Plan, providers []providerChange, runs []TerraformRun, c
 	if len(modules.Unreadable) > 0 {
 		b.WriteString("\nModule selections could not be read after init for these roots:\n\n")
 		for _, u := range modules.Unreadable {
-			fmt.Fprintf(&b, "- `%s`: %s\n", safeMarkdown(u.Root), safeMarkdown(u.Error))
+			fmt.Fprintf(&b, "- `%s`: `%s`\n", safeMarkdown(u.Root), safeMarkdown(u.Error))
 		}
 	}
 
@@ -298,7 +298,7 @@ func body(plan *upgrade.Plan, providers []providerChange, runs []TerraformRun, c
 		b.WriteString("These providers are held below their newest release by a constraint\n")
 		b.WriteString("declared in a module this repository depends on:\n\n")
 		for _, s := range skipped {
-			fmt.Fprintf(&b, "- `%s` in `%s`: %s\n", safeMarkdown(model.DisplaySource(s.Address)), safeMarkdown(s.Module), safeMarkdown(s.Reason))
+			fmt.Fprintf(&b, "- `%s` in `%s`: `%s`\n", safeMarkdown(model.DisplaySource(s.Address)), safeMarkdown(s.Module), safeMarkdown(s.Reason))
 		}
 	}
 

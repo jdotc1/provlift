@@ -172,19 +172,29 @@ func TestBodyIncludesVerificationResults(t *testing.T) {
 
 func TestBodyEscapesRepositoryControlledMarkdown(t *testing.T) {
 	plan := &upgrade.Plan{Actions: []upgrade.Action{
-		action(t, "env|prod\nINJECT", "hashicorp/azurerm", "4.11.0", "4.19.0", upgrade.LevelMinor, false),
-	}}
-	runs := []TerraformRun{{Module: "env|prod\nINJECT", Command: "validate|bad\nINJECT", OK: true}}
+		action(t, "@team|prod`\nINJECT", "hashicorp/azurerm", "4.11.0", "4.19.0", upgrade.LevelMinor, false),
+	}, Skipped: []upgrade.Skip{{
+		Module: "@team|prod`\nINJECT", Address: addr(t, "hashicorp/azurerm"),
+		Reason: "@reviewers dependency limit\nINJECT",
+	}}}
+	runs := []TerraformRun{{Module: "@team|prod`\nINJECT", Command: "validate|bad\nINJECT", OK: true}}
 	modules := ModuleVersions{
 		Changes:    []ModuleChange{{Root: "root|a", Module: "mod\nINJECT", Source: "git|bad", From: "1", To: "2"}},
-		Unreadable: []UnreadableRoot{{Root: "root|bad", Error: "error\nINJECT"}},
+		Unreadable: []UnreadableRoot{{Root: "root|bad", Error: "@admin error\nINJECT"}},
 	}
 	pr := BuildWithModules(plan, runs, []string{"file|bad\nINJECT.tf"}, modules)
-	if strings.Contains(pr.Body, "| `env|prod") || strings.Contains(pr.Body, "\nINJECT") || strings.Contains(pr.Body, "| `root|a`") {
+	if strings.Contains(pr.Body, "| `@team|prod") || strings.Contains(pr.Body, "\nINJECT") || strings.Contains(pr.Body, "| `root|a`") {
 		t.Fatalf("unescaped Markdown table or multiline injection:\n%s", pr.Body)
 	}
-	if !strings.Contains(pr.Body, "env\\|prod INJECT") || !strings.Contains(pr.Body, "root\\|a") {
+	if !strings.Contains(pr.Body, "@team\\|prod&#96; INJECT") || !strings.Contains(pr.Body, "root\\|a") {
 		t.Fatalf("escaped values missing:\n%s", pr.Body)
+	}
+	// In prose, these leading @ values would be live GitHub mentions.
+	// Keep the untrusted error and skip reason inside inline code spans.
+	for _, want := range []string{"`: `@admin error INJECT`", ": `@reviewers dependency limit INJECT`"} {
+		if !strings.Contains(pr.Body, want) {
+			t.Errorf("leading @ must be enclosed in a code span; missing %q:\n%s", want, pr.Body)
+		}
 	}
 }
 
@@ -357,7 +367,7 @@ func TestBodyListsChangesVerificationAndModulesHeldBackByADependency(t *testing.
 		"| `envs/prod` | `hashicorp/google` | 5.40.0 | 5.41.0 | minor | `&lt; 5.41.0` -> `&lt; 5.42.0` |",
 		"## Files changed", "- `envs/prod/versions.tf`",
 		"## Verification", "| `envs/prod` | `terraform validate` | :white_check_mark: passed |",
-		"## Not upgraded further", "- `hashicorp/google` in `envs/dev`: " + safeMarkdown(reason),
+		"## Not upgraded further", "- `hashicorp/google` in `envs/dev`: `" + safeMarkdown(reason) + "`",
 	} {
 		if !strings.Contains(pr.Body, want) {
 			t.Errorf("body is missing %q:\n%s", want, pr.Body)
