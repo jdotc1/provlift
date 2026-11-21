@@ -313,7 +313,7 @@ func body(plan *upgrade.Plan, providers []providerChange, runs []TerraformRun, c
 func safeMarkdown(value string) string {
 	value = strings.NewReplacer("\r\n", " ", "\n", " ", "\r", " ").Replace(value)
 	value = html.EscapeString(value)
-	return strings.NewReplacer("\\", "\\\\", "|", "\\|", "`", "&#96;").Replace(value)
+	return strings.NewReplacer("\\", "\\\\", "|", "\\|", "`", "&#96;", "[", "\\[", "]", "\\]", "(", "\\(", ")", "\\)", "!", "\\!").Replace(value)
 }
 
 // orNone renders a module version that was absent on one side of a change.
