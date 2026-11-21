@@ -267,6 +267,30 @@ func (h *scriptHarness) invocations(t *testing.T) [][]string {
 	return calls
 }
 
+// Keep a write-scoped workflow token out of .git/config while modules and
+// provider plugins execute. This is a partial hardening step toward #23:
+// job-level token permissions still need to be split before Terraform runs.
+func TestExampleCheckoutsNeverPersistGitHubCredentials(t *testing.T) {
+    for _, filename := range []string{"provider-upgrades.yml", "provider-compatibility.yml"} {
+        document := readWorkflow(t, filename)
+        checkoutCount := 0
+        for jobName, job := range document.Jobs {
+            for _, step := range job.Steps {
+                if !strings.HasPrefix(step.Uses, "actions/checkout@") {
+                    continue
+                }
+                checkoutCount++
+                if step.With["persist-credentials"] != "false" {
+                    t.Errorf("%s job %s must not retain GITHUB_TOKEN in git config", filename, jobName)
+                }
+            }
+        }
+        if checkoutCount == 0 {
+            t.Errorf("%s has no checkout steps to verify", filename)
+        }
+    }
+}
+
 func TestExampleRunScriptsNeverInlineGitHubExpressions(t *testing.T) {
 	for _, filename := range []string{"provider-upgrades.yml", "provider-compatibility.yml"} {
 		document := readWorkflow(t, filename)
